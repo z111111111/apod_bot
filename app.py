@@ -3,14 +3,12 @@ import os
 from flask import Flask, request
 import json
 import requests 
-# r = requests.get('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&count=2')
 
-# todos = json.loads(r.text)
-# print(todos[0])
 import telebot
 from telebot import types
 
-TOKEN = '1796790450:AAG8_BI8FixTL3kkiOqPOxPGkb36LiStng4' 
+TOKEN = 'YOUR_TOKEN' 
+NASA_TOKEN = 'YOUR_NASA_TOKEN'
 bot = telebot.TeleBot(TOKEN)
 
 app = Flask(__name__)
@@ -24,7 +22,7 @@ def get_text_messages(message):
     bot.send_message(message.from_user.id, "Привет, я показываю космическую картинку дня (а иногда это может быть и видео) NASA по введенной дате. Напиши мне: \"show\" или нажми кнопку, чтобы посмотреть!", reply_markup=markup)
 
 def randrequest():    
-    r = requests.get('https://api.nasa.gov/planetary/apod?api_key=UbcjZZErY1BGfl8hzEYCuOWucgdhraRM9aYpExoj&count=1')
+    r = requests.get(f'https://api.nasa.gov/planetary/apod?api_key={NASA_TOKEN}&count=1')
     todos = json.loads(r.text)
     return todos[0]
 
@@ -110,7 +108,7 @@ def get_day(message):
         try:
             global day
             day = int(message.text)
-            r = requests.get(f'https://api.nasa.gov/planetary/apod?api_key=UbcjZZErY1BGfl8hzEYCuOWucgdhraRM9aYpExoj&date={str(year)}-{str(month)}-{str(day)}')
+            r = requests.get(f'https://api.nasa.gov/planetary/apod?api_key={NASA_TOKEN}&date={str(year)}-{str(month)}-{str(day)}')
             
             todos = json.loads(r.text)
             try:
@@ -139,7 +137,7 @@ def getMessage():
 @app.route("/")
 def webhook():
     bot.remove_webhook()
-    bot.set_webhook(url='https://flask-apodbot.herokuapp.com/' + TOKEN)
+    bot.set_webhook(url='https://your-flask-app.herokuapp.com/' + TOKEN)
     return "!", 200
 
 
